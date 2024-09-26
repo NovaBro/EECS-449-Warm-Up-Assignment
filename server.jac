@@ -15,7 +15,3 @@ walker interact_with_body {
         };
     }
 }
-
-walker williamsADD {
-    
-}
