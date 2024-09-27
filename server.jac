@@ -1,10 +1,10 @@
-#import:py from mtllm.llms {Ollama}
-
-#glob llm = Ollama(model_name='llama3.1');
-
 import:py from mtllm.llms {Ollama}
 
-glob llm = Ollama(model_name='phi3.5');
+glob llm = Ollama(model_name='llama3.1');
+
+#import:py from mtllm.llms {Ollama}
+
+#glob llm = Ollama(model_name='phi3.5');
 
 import:jac from rag {RagEngine}
 glob rag_engine:RagEngine = RagEngine();
@@ -36,20 +36,6 @@ walker interact {
         }
     }
 
-    can chat with Session entry {
-        here.chat_history.append({"role": "user", "content": self.message});
-        data = rag_engine.get_from_chroma(query=self.message);
-        response = here.llm_chat(
-            message=self.message,
-            chat_history=here.chat_history,
-            agent_role="You are a conversation agent designed to help users with their queries based on the documents provided",
-            context=data
-        );
-
-        here.chat_history.append({"role": "assistant", "content": response});
-
-        report {"response": response};
-    }
 }
 
 enum ChatType {
@@ -57,13 +43,10 @@ enum ChatType {
     QA : 'Given context is enough for an answer' = "user_qa"
 }
 
+
 node Router {
     can 'route the query to the appropriate task type'
     classify(message:'query from the user to be routed.':str) -> ChatType by llm(method="Reason", temperature=0.0);
-}
-
-node Chat {
-    has chat_type: ChatType;
 }
 
 walker infer {
@@ -85,6 +68,10 @@ walker infer {
     }
 
 
+}
+
+node Chat {
+    has chat_type: ChatType;
 }
 
 node RagChat :Chat: {
@@ -114,8 +101,6 @@ node QAChat :Chat: {
         here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users with their queries");
     }
 }
-
-
 
 node Session {
     can chat with interact entry {
