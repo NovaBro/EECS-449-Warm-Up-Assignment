@@ -66,6 +66,27 @@ node Chat {
     has chat_type: ChatType;
 }
 
+walker infer {
+    has message:str;
+    has chat_history: list[dict];
+
+    can init_router with `root entry {
+        visit [-->](`?Router) else {
+            router_node = here ++> Router();
+            router_node ++> RagChat();
+            router_node ++> QAChat();
+            visit router_node;
+        }
+    }
+
+    can route with Router entry {
+        classification = here.classify(message = self.message);
+        visit [-->](`?Chat)(?chat_type==classification);
+    }
+
+
+}
+
 node RagChat :Chat: {
     has chat_type: ChatType = ChatType.RAG;
 
@@ -94,26 +115,7 @@ node QAChat :Chat: {
     }
 }
 
-walker infer {
-    has message:str;
-    has chat_history: list[dict];
 
-    can init_router with `root entry {
-        visit [-->](`?Router) else {
-            router_node = here ++> Router();
-            router_node ++> RagChat();
-            router_node ++> QAChat();
-            visit router_node;
-        }
-    }
-
-    can route with Router entry {
-        classification = here.classify(message = self.message);
-        visit [-->](`?Chat)(?chat_type==classification);
-    }
-
-
-}
 
 node Session {
     can chat with interact entry {
