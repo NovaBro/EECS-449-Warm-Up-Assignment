@@ -17,3 +17,21 @@ class interact_with_body(_Jac.Walker):
 
     def return_message(self, _jac_here_: _Jac.RootType) -> None:
         _Jac.report({'response': 'Hello, ' + self.name + '!'})
+
+@_Jac.make_walker(on_entry=[_Jac.DSFunc('return_message', _Jac.RootType)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class my_add(_Jac.Walker):
+    x: int
+    y: int
+
+    def return_message(self, _jac_here_: _Jac.RootType) -> None:
+        _Jac.report({'response': self.x + self.y})
+
+@_Jac.make_walker(on_entry=[_Jac.DSFunc('return_message', _Jac.RootType)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class my_mult(_Jac.Walker):
+    x: int
+    y: int
+
+    def return_message(self, _jac_here_: _Jac.RootType) -> None:
+        _Jac.report({'response': self.x * self.y})
