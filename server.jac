@@ -46,7 +46,7 @@ node Session {
 enum ChatType {
     RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
     QA : 'Given context is enough for an answer' = "user_qa",
-    Sports : 'If the context is anyway related to sports, athletics, or activities' = "Sports"
+    RAND : 'The given context is unclear, intelligible, or undecipherable' = "RAND"
 }
 node Router {
     can 'route the query to the appropriate task type'
@@ -62,7 +62,7 @@ walker infer {
             router_node = here ++> Router();
             router_node ++> RagChat();
             router_node ++> QAChat();
-            router_node ++> SportChat();
+            router_node ++> RAND_Chat();
             visit router_node;
         }
     }
@@ -107,8 +107,8 @@ node QAChat :Chat: {
     }
 }
 
-node SportChat :Chat: {
-    has chat_type: ChatType = ChatType.Sports;
+node RAND_Chat :Chat: {
+    has chat_type: ChatType = ChatType.RAND;
 
     can respond with infer entry {
         can 'Respond to message using chat_history as context and agent_role as the goal of the agent'
@@ -116,6 +116,6 @@ node SportChat :Chat: {
             chat_history: 'chat history':list[dict],
             agent_role:'role of the agent responding':str
                 ) -> 'response':str by llm();
-        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users understand what are sports. Respond exactely with 'SPORT SPORT SPORT'");
+        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are to detect gibberish, intelligible, or undecipherable messages. If dectect, then respond with 'RAND_CHAT: THIS IS NOT UNDERSTANDABLE'");
     }
 }
