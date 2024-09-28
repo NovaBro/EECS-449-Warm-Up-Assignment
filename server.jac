@@ -115,6 +115,6 @@ node SportChat :Chat: {
             chat_history: 'chat history':list[dict],
             agent_role:'role of the agent responding':str
                 ) -> 'response':str by llm();
-        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users understand what are sports");
+        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users understand what are sports. Respond exactely with 'SPORT SPORT SPORT'");
     }
 }
