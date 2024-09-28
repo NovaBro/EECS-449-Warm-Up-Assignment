@@ -49,6 +49,10 @@ enum ChatType {
     myRAND : 'The given context is unclear intelligible or undecipherable' = "myRAND"
 }
 
+# myRAND is useful for when the AI model has no good solution to the question
+# the user posses. Instead of having the model try to struggle its way, users
+# can attempt to prompt a better message.
+
 node Router {
     can 'route the query to the appropriate task type'
     classify(message:'query from the user to be routed.':str) -> ChatType by llm(method="Reason", temperature=0.0);
@@ -120,3 +124,7 @@ node RAND_Chat :Chat: {
         here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are to detect gibberish, intelligible, or undecipherable messages. If dectect, then respond with 'RAND_CHAT: THIS IS NOT UNDERSTANDABLE'");
     }
 }
+
+# Here, the chatbot will route the user query if the chatbot detects something that
+# it considers to be "gibberish, intelligible, or undecipherable messages". Additionally,
+# the chat bot will make a strong indication that it is unable to understand.
