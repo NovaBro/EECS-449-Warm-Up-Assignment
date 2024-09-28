@@ -79,7 +79,7 @@ walker infer {
 node Chat {
     has chat_type: ChatType;
 }
- 
+
 node RagChat :Chat: {
     has chat_type: ChatType = ChatType.RAG;
 
