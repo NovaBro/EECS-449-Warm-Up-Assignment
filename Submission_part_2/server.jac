@@ -4,7 +4,7 @@
 
 import:py from mtllm.llms {Ollama}
 
-glob llm = Ollama(model_name='phi3.5');
+glob llm = Ollama(model_name='llama3.1');
 
 import:jac from rag {RagEngine}
 glob rag_engine:RagEngine = RagEngine();
