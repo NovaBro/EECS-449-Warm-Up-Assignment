@@ -53,7 +53,7 @@ node Router {
     can 'route the query to the appropriate task type'
     classify(message:'query from the user to be routed.':str) -> ChatType by llm(method="Reason", temperature=0.0);
 }
- 
+
 walker infer {
     has message:str;
     has chat_history: list[dict];
