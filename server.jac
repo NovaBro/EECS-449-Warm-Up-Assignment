@@ -61,8 +61,8 @@ walker infer {
     can init_router with `root entry {
         visit [-->](`?Router) else {
             router_node = here ++> Router();
-            #router_node ++> RagChat();
-            #router_node ++> QAChat();
+            router_node ++> RagChat();
+            router_node ++> QAChat();
             router_node ++> RAND_Chat();
             visit router_node;
         }
