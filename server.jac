@@ -46,8 +46,9 @@ node Session {
 enum ChatType {
     # RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
     # QA : 'Given context is enough for an answer' = "user_qa",
-    RAND : 'The given context is unclear, intelligible, or undecipherable' = "RAND"
+    myRAND : 'The given context is unclear intelligible or undecipherable' = "myRAND"
 }
+
 node Router {
     can 'route the query to the appropriate task type'
     classify(message:'query from the user to be routed.':str) -> ChatType by llm(method="Reason", temperature=0.0);
@@ -70,7 +71,7 @@ walker infer {
     can route with Router entry {
         classification = here.classify(message = self.message);
         print("Classification:", classification);
-        print("Chat nodes:", [-->](`?Chat));
+        #print("Chat nodes:", [-->](`?Chat));
         visit [-->](`?Chat)(?chat_type==classification);
     }
 }
@@ -108,7 +109,7 @@ node Chat {
 # }
 
 node RAND_Chat :Chat: {
-    has chat_type: ChatType = ChatType.RAND;
+    has chat_type: ChatType = ChatType.myRAND;
 
     can respond with infer entry {
         can 'Respond to message using chat_history as context and agent_role as the goal of the agent'
