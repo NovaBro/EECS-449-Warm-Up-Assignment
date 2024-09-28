@@ -45,7 +45,8 @@ node Session {
 
 enum ChatType {
     RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
-    QA : 'Given context is enough for an answer' = "user_qa"
+    QA : 'Given context is enough for an answer' = "user_qa",
+    Sports : 'If the context is anyway related to sports, athletics, or activities' = "sport"
 }
 node Router {
     can 'route the query to the appropriate task type'
@@ -61,6 +62,7 @@ walker infer {
             router_node = here ++> Router();
             router_node ++> RagChat();
             router_node ++> QAChat();
+            router_node ++> sport_chat();
             visit router_node;
         }
     }
@@ -100,5 +102,19 @@ node QAChat :Chat: {
             agent_role:'role of the agent responding':str
                 ) -> 'response':str by llm();
         here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users with their queries");
+    }
+}
+
+node sport_chat :Chat: {
+    has chat_type: ChatType = ChatType.Sports;
+
+    can respond with infer entry {
+        can 'Respond to message using chat_history as context and agent_role as the goal of the agent'
+        respond_with_llm(   message:'current message':str,
+            chat_history: 'chat history':list[dict],
+            agent_role:'role of the agent responding':str
+                ) -> 'response':str by llm();
+        here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed give helpful sport advice if topics related to sports activities, gym, or athletics are mentioned.");
+        print('SUCCESS, willizhe')
     }
 }
