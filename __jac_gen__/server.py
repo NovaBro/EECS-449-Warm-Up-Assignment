@@ -119,4 +119,4 @@ class SportChat(Chat, _Jac.Node):
 
         def respond_with_llm(message: str, chat_history: list[dict], agent_role: str) -> str:
             return _Jac.with_llm(file_loc=__file__, model=llm, model_params={}, scope='server(Module).SportChat(node).respond(Ability).respond_with_llm(Ability)', incl_info=[], excl_info=[], inputs=[('current message', str, 'message', message), ('chat history', list[dict], 'chat_history', chat_history), ('role of the agent responding', str, 'agent_role', agent_role)], outputs=('response', 'str'), action='Respond to message using chat_history as context and agent_role as the goal of the agent', _globals=globals(), _locals=locals())
-        _jac_here_.response = respond_with_llm(_jac_here_.message, _jac_here_.chat_history, agent_role='You are a conversation agent designed to help users understand what are sports')
+        _jac_here_.response = respond_with_llm(_jac_here_.message, _jac_here_.chat_history, agent_role="You are a conversation agent designed to help users understand what are sports. Respond exactely with 'SPORT SPORT SPORT'")

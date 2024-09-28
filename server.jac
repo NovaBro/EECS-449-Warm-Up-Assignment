@@ -70,6 +70,7 @@ walker infer {
     can route with Router entry {
         classification = here.classify(message = self.message);
         print("Classification:", classification);
+        print("Chat nodes:", [-->](`?chat));
         visit [-->](`?Chat)(?chat_type==classification);
     }
 }
