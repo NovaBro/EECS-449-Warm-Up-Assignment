@@ -70,8 +70,6 @@ class infer(_Jac.Walker):
             pass
         else:
             router_node = _Jac.connect(left=_jac_here_, right=Router(), edge_spec=_Jac.build_edge(is_undirected=False, conn_type=None, conn_assign=None))
-            _Jac.connect(left=router_node, right=RagChat(), edge_spec=_Jac.build_edge(is_undirected=False, conn_type=None, conn_assign=None))
-            _Jac.connect(left=router_node, right=QAChat(), edge_spec=_Jac.build_edge(is_undirected=False, conn_type=None, conn_assign=None))
             _Jac.connect(left=router_node, right=RAND_Chat(), edge_spec=_Jac.build_edge(is_undirected=False, conn_type=None, conn_assign=None))
             if _Jac.visit_node(self, router_node):
                 pass
