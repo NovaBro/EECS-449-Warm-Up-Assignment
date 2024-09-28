@@ -89,6 +89,7 @@ node RagChat :Chat: {
                         ) -> 'response':str by llm();
         data = rag_engine.get_from_chroma(query=here.message);
         here.response = respond_with_llm(here.message, here.chat_history, "You are a conversation agent designed to help users with their queries based on the documents provided", data);
+        print("RAG CHAT")
     }
 }
 
@@ -102,6 +103,7 @@ node QAChat :Chat: {
             agent_role:'role of the agent responding':str
                 ) -> 'response':str by llm();
         here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users with their queries");
+        print("QA CHAT")
     }
 }
 
