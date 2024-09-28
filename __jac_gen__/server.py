@@ -48,6 +48,8 @@ class Session(_Jac.Node):
         _Jac.report({'response': response.response})
 
 class ChatType(__jac_Enum__):
+    RAG = 'RAG'
+    QA = 'user_qa'
     myRAND = 'myRAND'
 
 @_Jac.make_node(on_entry=[], on_exit=[])
@@ -83,6 +85,29 @@ class infer(_Jac.Walker):
 @__jac_dataclass__(eq=False)
 class Chat(_Jac.Node):
     chat_type: ChatType
+
+@_Jac.make_node(on_entry=[_Jac.DSFunc('respond', infer)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class RagChat(Chat, _Jac.Node):
+    chat_type: ChatType = _Jac.has_instance_default(gen_func=lambda: ChatType.RAG)
+
+    def respond(self, _jac_here_: infer) -> None:
+
+        def respond_with_llm(message: str, chat_history: list[dict], agent_role: str, context: list) -> str:
+            return _Jac.with_llm(file_loc=__file__, model=llm, model_params={}, scope='server(Module).RagChat(node).respond(Ability).respond_with_llm(Ability)', incl_info=[], excl_info=[], inputs=[('current message', str, 'message', message), ('chat history', list[dict], 'chat_history', chat_history), ('role of the agent responding', str, 'agent_role', agent_role), ('retirved context from documents', list, 'context', context)], outputs=('response', 'str'), action='Respond to message using chat_history as context and agent_role as the goal of the agent', _globals=globals(), _locals=locals())
+        data = rag_engine.get_from_chroma(query=_jac_here_.message)
+        _jac_here_.response = respond_with_llm(_jac_here_.message, _jac_here_.chat_history, 'You are a conversation agent designed to help users with their queries based on the documents provided', data)
+
+@_Jac.make_node(on_entry=[_Jac.DSFunc('respond', infer)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class QAChat(Chat, _Jac.Node):
+    chat_type: ChatType = _Jac.has_instance_default(gen_func=lambda: ChatType.QA)
+
+    def respond(self, _jac_here_: infer) -> None:
+
+        def respond_with_llm(message: str, chat_history: list[dict], agent_role: str) -> str:
+            return _Jac.with_llm(file_loc=__file__, model=llm, model_params={}, scope='server(Module).QAChat(node).respond(Ability).respond_with_llm(Ability)', incl_info=[], excl_info=[], inputs=[('current message', str, 'message', message), ('chat history', list[dict], 'chat_history', chat_history), ('role of the agent responding', str, 'agent_role', agent_role)], outputs=('response', 'str'), action='Respond to message using chat_history as context and agent_role as the goal of the agent', _globals=globals(), _locals=locals())
+        _jac_here_.response = respond_with_llm(_jac_here_.message, _jac_here_.chat_history, agent_role='You are a conversation agent designed to help users with their queries')
 
 @_Jac.make_node(on_entry=[_Jac.DSFunc('respond', infer)], on_exit=[])
 @__jac_dataclass__(eq=False)
