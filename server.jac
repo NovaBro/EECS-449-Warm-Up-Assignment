@@ -44,8 +44,8 @@ node Session {
 }
 
 enum ChatType {
-    # RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
-    # QA : 'Given context is enough for an answer' = "user_qa",
+    RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
+    QA : 'Given context is enough for an answer' = "user_qa",
     myRAND : 'The given context is unclear intelligible or undecipherable' = "myRAND"
 }
 
